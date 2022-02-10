@@ -1,0 +1,69 @@
+uses
+    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Chilkat_v9_5_0_TLB;
+
+...
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+pubKey: TPublicKey;
+success: Integer;
+jwt: TChilkatJwt;
+token: WideString;
+sigVerified: Integer;
+leeway: Integer;
+bTimeValid: Integer;
+payload: WideString;
+json: TChilkatJsonObject;
+joseHeader: WideString;
+
+begin
+//  Demonstrates how to verify an JWT using an RSA public key.
+
+//  This example requires the Chilkat API to have been previously unlocked.
+//  See Global Unlock Sample for sample code.
+
+pubKey := TPublicKey.Create(Self);
+success := pubKey.LoadFromFile('qa_data/pem/rsa_public.pem');
+
+jwt := TChilkatJwt.Create(Self);
+
+token := 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJKb2huIiwiYXVkIjoiaHR0cDovL2V4YW1wbGUuY29tIiwiaWF0IjoxNDYzNDQ1MjM4LCJuYmYiOjE0NjM0NDUyMzgsImV4cCI6MTQ2MzQ0ODgzOH0.XRtqed6nuJ9lrp0wbNdDX3fCkSh_d9cHAniPbNcqm7G-5N3mtI5ntQvZBDP3pHtECVqufuDwW7XgUtzAi0ZXhyiRm1iZ3wMSN5lHWv52OQJmMHPA7VPd8Q1hDG-tx-QswzJKd75OEUHP7wIXq2Mg_YVElfDvJI6TGjGyS1y-RLHlz-ldlGsEwIBkO0PtzIYTVov97x8p9KCsPNhS4lZUIqKOYoTZUV5LpuAWARl-636DfMEB_A5_IEaw_W8leh2suP2ULVZxwE-Tk1kBC9tsSGrBrPTtg7sziaV4Lbb0JRANmh98uTRu5f8ji9CVOnpbMiAzjsJSy56kz_olweXSuA';
+
+//  First verify the signature.
+sigVerified := jwt.VerifyJwtPk(token,pubKey.ControlInterface);
+Memo1.Lines.Add('verified: ' + IntToStr(sigVerified));
+
+//  Let's see if the time constraints, if any, are valid.
+//  The above JWT was created on the afternoon of 16-May-2016, with an expiration of 1 hour.
+//  If the current system time is before the "nbf" time, or after the "exp" time,
+//  then IsTimeValid will return false/0.
+//  Also, we'll allow a leeway of 60 seconds to account for any clock skew.
+//  Note: If the token has no "nbf" or "exp" claim fields, then IsTimeValid is always true.
+leeway := 60;
+bTimeValid := jwt.IsTimeValid(token,leeway);
+Memo1.Lines.Add('time constraints valid: ' + IntToStr(bTimeValid));
+
+//  Now let's recover the original claims JSON (the payload).
+payload := jwt.GetPayload(token);
+//  The payload will likely be in compact form:
+Memo1.Lines.Add(payload);
+
+//  We can format for human viewing by loading it into Chilkat's JSON object
+//  and emit.
+json := TChilkatJsonObject.Create(Self);
+success := json.Load(payload);
+json.EmitCompact := 0;
+Memo1.Lines.Add(json.Emit());
+
+//  We can recover the original JOSE header in the same way:
+joseHeader := jwt.GetHeader(token);
+//  The payload will likely be in compact form:
+Memo1.Lines.Add(joseHeader);
+
+//  We can format for human viewing by loading it into Chilkat's JSON object
+//  and emit.
+success := json.Load(joseHeader);
+json.EmitCompact := 0;
+Memo1.Lines.Add(json.Emit());
+end;
