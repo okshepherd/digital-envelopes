@@ -4,18 +4,7 @@ uses
 
 ...
 
-procedure TForm1.Button1Click(Sender: TObject);
-var
-pubKey: TPublicKey;
-success: Integer;
-jwt: TChilkatJwt;
-token: WideString;
-sigVerified: Integer;
-leeway: Integer;
-bTimeValid: Integer;
-payload: WideString;
-json: TChilkatJsonObject;
-joseHeader: WideString;
+
 
 begin
 //  Demonstrates how to verify an JWT using an RSA public key.
@@ -28,6 +17,7 @@ success := pubKey.LoadFromFile('qa_data/pem/rsa_public.pem');
 
 jwt := TChilkatJwt.Create(Self);
 
+add some stuff
 token := 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJzdWIiOiJKb2huIiwiYXVkIjoiaHR0cDovL2V4YW1wbGUuY29tIiwiaWF0IjoxNDYzNDQ1MjM4LCJuYmYiOjE0NjM0NDUyMzgsImV4cCI6MTQ2MzQ0ODgzOH0.XRtqed6nuJ9lrp0wbNdDX3fCkSh_d9cHAniPbNcqm7G-5N3mtI5ntQvZBDP3pHtECVqufuDwW7XgUtzAi0ZXhyiRm1iZ3wMSN5lHWv52OQJmMHPA7VPd8Q1hDG-tx-QswzJKd75OEUHP7wIXq2Mg_YVElfDvJI6TGjGyS1y-RLHlz-ldlGsEwIBkO0PtzIYTVov97x8p9KCsPNhS4lZUIqKOYoTZUV5LpuAWARl-636DfMEB_A5_IEaw_W8leh2suP2ULVZxwE-Tk1kBC9tsSGrBrPTtg7sziaV4Lbb0JRANmh98uTRu5f8ji9CVOnpbMiAzjsJSy56kz_olweXSuA';
 
 //  First verify the signature.
