@@ -1,4 +1,4 @@
-import { auth, googleAuthProvider } from "../lib/firebase"
+import { auth, firestore, googleAuthProvider } from '../lib/firebase';
 import s from '../styles/EnterPage.module.scss'
 import { useContext } from 'react';
 import { UserContext } from '../lib/context';
@@ -12,7 +12,7 @@ export default function EnterPage( props ) {
         <div className="hero-body has-text-centered">
           <div className="container">
 
-            <Metatags title="Enter" description="Sign up for this amazing app!" />
+            {/* <Metatags title="Enter" description="Sign up for this amazing app!" /> */}
             {/* Title & Intro with user signed IN */}
             {user && ( 
               <>
@@ -58,14 +58,33 @@ export default function EnterPage( props ) {
 //Sign in with Google button
 function SignInButton() {
   const signInWithGoogle = async () => {
-    await auth.signInWithPopup(googleAuthProvider);
+    const userSignIn = await auth.signInWithPopup(googleAuthProvider);
+
+    if(userSignIn.additionalUserInfo?.isNewUser) {
+      console.log("New User Login Recognized");
+      NewUserDataEntry(userSignIn.user);
+    }
+    else {
+      console.log("Returning User Login");
+    }
   };
+
   return (
     <button className={s.btnGoogle} onClick={signInWithGoogle}>
         <img src="/Icons/Google Icon.png" /> Sign in with Google
     </button>  
   );
 }
+
+async function NewUserDataEntry(newUser) {
+  const userDoc = firestore.doc(`users/${newUser.uid}`);
+  const batch = firestore.batch();
+  batch.set(userDoc, { uid: newUser.uid, email: newUser.email, photoURL: newUser.photoURL, displayName: newUser.displayName });
+
+  await batch.commit();
+
+}
+
 
 
 //Sign out button
