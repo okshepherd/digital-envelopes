@@ -7,7 +7,21 @@ import { auth, firestore } from '../lib/firebase';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
+
+
 function MyApp({ Component, pageProps }) {
+
+  // This avoids a current error in webfont loader that
+  // breaks with an undefined window size
+  useEffect(() => {
+    const WebFontLoader = require('webfontloader')
+    WebFontLoader.load({
+      google: {
+        families: ['Roboto']
+      }
+    })
+  }, [])
+
   const [user] = useAuthState(auth);
 
   return (

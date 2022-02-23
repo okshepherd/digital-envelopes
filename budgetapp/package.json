@@ -16,11 +16,13 @@
     "react-dom": "17.0.2",
     "react-firebase-hooks": "^5.0.2",
     "react-hot-toast": "^2.2.0",
-    "sass": "^1.49.8"
+    "sass": "^1.49.8",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@types/node": "^17.0.18",
     "@types/react": "^17.0.39",
+    "@types/webfontloader": "^1.6.34",
     "eslint": "8.9.0",
     "eslint-config-next": "12.0.10",
     "typescript": "^4.5.5"
