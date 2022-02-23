@@ -12,7 +12,7 @@ export default function EnterPage( props ) {
         <div className="hero-body has-text-centered">
           <div className="container">
 
-            <Metatags title="Enter" description="Sign up for this amazing app!" />
+            {/* <Metatags title="Enter" description="Sign up for this amazing app!" /> */}
             {/* Title & Intro with user signed IN */}
             {user && ( 
               <>
